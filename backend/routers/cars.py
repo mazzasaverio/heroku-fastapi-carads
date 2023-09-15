@@ -3,7 +3,7 @@ from typing import Tuple, List, Optional
 from fastapi import APIRouter, Request, Body, status, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-
+from pydantic import ValidationError
 
 from models import CarBase, CarDB, CarUpdate
 
@@ -29,11 +29,20 @@ async def list_all_cars(
     
     full_query = request.app.mongodb['cars1'].find(query).sort("_id",-1).skip(skip).limit(RESULTS_PER_PAGE)
 
-    results = [CarDB(**raw_car) async for raw_car in full_query]
+    # results = [CarDB(**raw_car) async for raw_car in full_query]
 
-    # this is also possible
-    # results = await full_query.to_list(1000)
+    # # this is also possible
+    # # results = await full_query.to_list(1000)
     
+    # return results
+
+    results = []
+    for raw_car in await full_query.to_list(length=RESULTS_PER_PAGE):  # Changed this line to get a list
+        try:
+            results.append(CarDB(**raw_car))
+        except ValidationError as e:
+            print(f"Validation error for document {raw_car['_id']}: {e}")
+
     return results
 
 # create new car

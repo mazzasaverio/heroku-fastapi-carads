@@ -29,6 +29,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"message": "Hello, World!"}
 
 @app.on_event("startup")
 async def startup_db_client():
