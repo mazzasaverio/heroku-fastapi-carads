@@ -9,7 +9,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from routers.cars import router as cars_router
 
-
 DB_URL = config("DB_URL", cast=str)
 DB_NAME = config("DB_NAME", cast=str)
 
