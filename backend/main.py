@@ -16,7 +16,6 @@ DB_NAME = config("DB_NAME", cast=str)
 # define origins
 origins = ["*"]
 
-# instantiate the app
 app = FastAPI()
 
 # add CORS middleware
